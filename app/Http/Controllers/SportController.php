@@ -10,8 +10,8 @@ class SportController extends Controller
 {
     public function index()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $sports = Sport::withCount('events')
@@ -25,8 +25,8 @@ class SportController extends Controller
 
     public function create()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $sport = new Sport([
@@ -40,8 +40,8 @@ class SportController extends Controller
 
     public function store(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -57,13 +57,13 @@ class SportController extends Controller
             return response()->json(['success' => true, 'message' => 'Sport created successfully']);
         }
 
-        return redirect()->route('sports.index', ['flash' => 'created', 'name' => $sport->name]);
+        return redirect()->route('admin.sports.index', ['flash' => 'created', 'name' => $sport->name]);
     }
 
     public function edit(Sport $sport)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         return view('menu.sports.edit', [
@@ -73,8 +73,8 @@ class SportController extends Controller
 
     public function update(Request $request, Sport $sport)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -90,12 +90,12 @@ class SportController extends Controller
             return response()->json(['success' => true, 'message' => 'Sport updated successfully']);
         }
 
-        return redirect()->route('sports.index', ['flash' => 'updated', 'name' => $sport->name]);
+        return redirect()->route('admin.sports.index', ['flash' => 'updated', 'name' => $sport->name]);
     }
 
     public function destroy(Sport $sport)
     {
-        if (!session('authenticated')) {
+        if (!session('admin_authenticated')) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
 

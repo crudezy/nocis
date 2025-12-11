@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'role',
     ];
 
     /**
@@ -50,9 +52,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Application::class);
     }
-
-    public function reviewedApplications()
-    {
-        return $this->hasMany(Application::class, 'reviewed_by');
-    }
+public function reviewedApplications()
+{
+    return $this->hasMany(Application::class, 'reviewed_by');
 }
+
+public function savedJobs()
+{
+    return $this->belongsToMany(WorkerOpening::class, 'saved_jobs');
+}
+
+public function profile()
+{
+    return $this->hasOne(UserProfile::class);
+}
+}
+

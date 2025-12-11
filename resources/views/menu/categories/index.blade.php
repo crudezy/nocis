@@ -14,7 +14,7 @@
             <h2 class="text-2xl font-bold text-gray-800">Manage Job Categories</h2>
             <p class="text-gray-600 mt-1">Organize worker positions by category</p>
         </div>
-        <a href="{{ route('categories.create') }}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
+        <a href="{{ route('admin.categories.create') }}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
             <i class="fas fa-plus mr-2"></i> Add Category
         </a>
     </div>
@@ -63,7 +63,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('categories.edit', $category) }}" 
+                                <a href="{{ route('admin.categories.edit', $category) }}"
                                         class="text-blue-600 hover:text-blue-900 mr-3">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>

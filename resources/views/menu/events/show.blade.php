@@ -11,7 +11,7 @@
     {{-- Header with Back Button --}}
     <div class="flex items-center justify-between">
         <div>
-            <a href="{{ route('events.index') }}" 
+            <a href="{{ route('admin.events.index') }}"
                class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-2">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Events
             </a>
@@ -19,7 +19,7 @@
             <p class="text-gray-600 mt-1">Detailed view of event information</p>
         </div>
         <div class="flex items-center space-x-3">
-            <a href="{{ route('events.edit', $event) }}" 
+            <a href="{{ route('admin.events.edit', $event) }}"
                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
                 <i class="fas fa-edit mr-2"></i> Edit Event
             </a>

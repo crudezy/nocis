@@ -39,14 +39,18 @@ class WorkerOpening extends Model
     {
         return $this->belongsTo(JobCategory::class);
     }
+public function applications()
+{
+    return $this->hasMany(Application::class);
+}
 
-    public function applications()
-    {
-        return $this->hasMany(Application::class);
-    }
+public function savedByUsers()
+{
+    return $this->belongsToMany(User::class, 'saved_jobs');
+}
 
-    public function getSlotsRemainingAttribute(): int
-    {
-        return max(0, (int) $this->slots_total - (int) $this->slots_filled);
-    }
+public function getSlotsRemainingAttribute(): int
+{
+    return max(0, (int) $this->slots_total - (int) $this->slots_filled);
+}
 }

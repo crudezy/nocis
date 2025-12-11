@@ -13,8 +13,8 @@ class AnalyticsDashboardController extends Controller
 {
     public function index()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         // Get all events with their applications and worker openings

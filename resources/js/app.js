@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             element.remove();
             if (flashContainer && flashContainer.childElementCount === 0) {
                 flashContainer.remove();
-            }
+            }                                                                                   
         }, 300);
     };
 

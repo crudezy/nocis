@@ -1,31 +1,57 @@
 <?php
 
+use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\SportController;
 use App\Http\Controllers\AnalyticsDashboardController;
+use App\Http\Controllers\JobController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to login
+// Landing page route
 Route::get('/', function () {
-    return redirect('/login');
-});
+    return view('landing');
+})->name('landing');
 
-// Authentication Routes
+// Public Job Routes (accessible without login)
+Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
+
+// Customer Authentication Routes
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-// Login processing
+// Customer Login processing - redirect back to jobs after login
 Route::post('/login', function () {
     $credentials = request()->only('username', 'password');
-    
-    if ($credentials['username'] === 'admin' && $credentials['password'] === 'admin123') {
-        session(['authenticated' => true, 'user' => 'admin', 'login_time' => now()]);
-        return redirect('/dashboard');
+
+    // Database-backed authentication
+    $user = \App\Models\User::where('username', $credentials['username'])->first();
+
+    if ($user && \Hash::check($credentials['password'], $user->password)) {
+        // Only allow non-admin users to login via customer login
+        if ($user->role === 'admin') {
+            return back()->withErrors(['username' => 'Admin users must login via admin portal'])->withInput();
+        }
+
+        session([
+            'customer_authenticated' => true,
+            'customer_id' => $user->id,
+            'customer_username' => $user->username,
+            'customer_role' => $user->role,
+            'customer_login_time' => now()
+        ]);
+
+        // Redirect back to jobs page or to intended URL
+        $redirectTo = session('intended_url', '/jobs');
+        session()->forget('intended_url');
+        
+        return redirect($redirectTo);
     }
-    
+
     return back()->withErrors(['username' => 'Invalid credentials'])->withInput();
 })->middleware('web')->name('login.submit');
 
@@ -37,10 +63,76 @@ Route::get('/password/reset', function () {
     return view('auth.forgot-password');
 })->name('password.request');
 
+// Customer logout
 Route::post('/logout', function () {
-    session()->forget(['authenticated', 'user']);
-    return redirect('/login');
+    session()->forget(['customer_authenticated', 'customer_username']);
+    return redirect('/jobs');
 })->name('logout');
+
+// Job application routes (require customer login)
+Route::middleware(['web', 'customer'])->group(function () {
+    Route::post('/jobs/{job}/apply', [JobController::class, 'apply'])->name('jobs.apply');
+});
+
+// Customer Dashboard Routes (require customer login)
+Route::prefix('dashboard')->name('customer.')->middleware(['web', 'customer'])->group(function () {
+    Route::get('/', [CustomerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [CustomerDashboardController::class, 'profile'])->name('profile');
+    Route::post('/profile', [CustomerDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/update-social', [CustomerDashboardController::class, 'updateSocialMedia'])->name('profile.update-social');
+    Route::delete('/profile/remove-cv', [CustomerDashboardController::class, 'removeCV'])->name('profile.remove-cv');
+    Route::get('/settings', [CustomerDashboardController::class, 'settings'])->name('settings');
+    Route::post('/settings', [CustomerDashboardController::class, 'updateSettings'])->name('settings.update');
+    Route::post('/settings/photo', [CustomerDashboardController::class, 'updateProfilePhoto'])->name('settings.photo');
+    Route::delete('/settings/photo', [CustomerDashboardController::class, 'removeProfilePhoto'])->name('settings.photo.remove');
+    Route::get('/applications', [CustomerDashboardController::class, 'applications'])->name('applications');
+    
+    // Saved jobs routes
+    Route::post('/jobs/{job}/save', [CustomerDashboardController::class, 'saveJob'])->name('jobs.save');
+    Route::delete('/jobs/{job}/unsave', [CustomerDashboardController::class, 'unsaveJob'])->name('jobs.unsave');
+    Route::get('/saved-jobs', [CustomerDashboardController::class, 'savedJobs'])->name('saved-jobs');
+});
+
+// Admin Authentication Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Admin login page
+    Route::get('/login', function () {
+        return view('auth.admin-login');
+    })->name('login');
+
+    // Admin login processing
+    Route::post('/login', function () {
+        $credentials = request()->only('username', 'password');
+
+        // Database-backed authentication
+        $user = \App\Models\User::where('username', $credentials['username'])->first();
+
+        if ($user && \Hash::check($credentials['password'], $user->password)) {
+            // Only allow admin users to login via admin portal
+            if ($user->role !== 'admin') {
+                return back()->withErrors(['username' => 'Invalid admin credentials'])->withInput();
+            }
+
+            session([
+                'admin_authenticated' => true,
+                'admin_id' => $user->id,
+                'admin_username' => $user->username,
+                'admin_role' => $user->role,
+                'admin_login_time' => now()
+            ]);
+
+            return redirect('/admin/dashboard');
+        }
+
+        return back()->withErrors(['username' => 'Invalid admin credentials'])->withInput();
+    })->name('login.submit');
+
+    // Admin logout
+    Route::post('/logout', function () {
+        session()->forget(['admin_authenticated', 'admin_username']);
+        return redirect('/admin/login');
+    })->name('logout');
+});
 
 // Flash message handler
 Route::post('/flash-message', function () {
@@ -50,58 +142,47 @@ Route::post('/flash-message', function () {
     return back()->with($type, $data['message']);
 })->name('flash.message');
 
-// Protected Routes (require authentication)
-Route::middleware(['web'])->group(function () {
+// Protected Admin Routes (require admin authentication)
+Route::prefix('admin')->name('admin.')->middleware(['web', 'admin'])->group(function () {
+    // Admin Dashboard - Protected
     Route::get('/dashboard', function () {
-        \Log::info('Dashboard access attempt', [
-            'authenticated' => session('authenticated'),
-            'user' => session('user'),
-            'session_data' => session()->all(),
-            'session_id' => session()->getId(),
-            'request_method' => request()->method(),
-            'user_agent' => request()->userAgent(),
-        ]);
-        
-        if (!session('authenticated')) {
-            \Log::warning('Dashboard access denied - not authenticated');
-            return redirect('/login')->with('error', 'Please login to access dashboard');
-        }
-        
-        \Log::info('Dashboard access granted');
         return view('menu.dashboard.dashboard');
     })->name('dashboard');
 
+    // Analytics Dashboard - Protected
     Route::get('/analytics', [AnalyticsDashboardController::class, 'index'])->name('analytics');
 
+    // Events Management - Protected
     Route::resource('events', EventController::class);
 
-    Route::get('/workers', [WorkerController::class, 'index'])->name('workers.index');
-    Route::get('/workers/create', [WorkerController::class, 'create'])->name('workers.create');
-    Route::post('/workers', [WorkerController::class, 'store'])->name('workers.store');
-    Route::get('/workers/{opening}/edit', [WorkerController::class, 'edit'])->name('workers.edit');
-    Route::put('/workers/{opening}', [WorkerController::class, 'update'])->name('workers.update');
+    // Workers Management - Protected
+    Route::resource('workers', WorkerController::class);
 
-    // Job Categories CRUD
-    Route::get('/categories', [JobCategoryController::class, 'index'])->name('categories.index');
-    Route::get('/categories/create', [JobCategoryController::class, 'create'])->name('categories.create');
-    Route::post('/categories', [JobCategoryController::class, 'store'])->name('categories.store');
-    Route::get('/categories/{category}/edit', [JobCategoryController::class, 'edit'])->name('categories.edit');
-    Route::put('/categories/{category}', [JobCategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{category}', [JobCategoryController::class, 'destroy'])->name('categories.destroy');
+    // Job Categories CRUD - Protected
+    Route::resource('categories', JobCategoryController::class);
 
-    // Sports CRUD
-    Route::get('/sports', [SportController::class, 'index'])->name('sports.index');
-    Route::get('/sports/create', [SportController::class, 'create'])->name('sports.create');
-    Route::post('/sports', [SportController::class, 'store'])->name('sports.store');
-    Route::get('/sports/{sport}/edit', [SportController::class, 'edit'])->name('sports.edit');
-    Route::put('/sports/{sport}', [SportController::class, 'update'])->name('sports.update');
-    Route::delete('/sports/{sport}', [SportController::class, 'destroy'])->name('sports.destroy');
+    // Sports CRUD - Protected
+    Route::resource('sports', SportController::class);
 
-    Route::get('/reviews', function () {
-        if (!session('authenticated')) {
-            return redirect('/login');
-        }
-        return view('menu.reviews.index');
-    });
+    // Reviews Management - Protected
+    Route::get('/reviews', [\App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/{application}', [\App\Http\Controllers\ReviewController::class, 'updateStatus'])->name('reviews.update');
 });
 
+// Prevent customer users from accessing admin routes directly
+Route::middleware(['web'])->group(function () {
+    Route::get('/admin/{any}', function () {
+        if (session('customer_authenticated')) {
+            return redirect('/jobs')->with('error', 'Access denied. Admin area restricted.');
+        }
+        return redirect('/admin/login')->with('error', 'Please login to access admin area.');
+    })->where('any', '.*');
+});
+
+// Store intended URL before redirecting to login (for apply functionality)
+Route::middleware(['web'])->group(function () {
+    Route::get('/store-intended-url', function () {
+        session(['intended_url' => url()->previous()]);
+        return response()->json(['success' => true]);
+    })->name('store.intended.url');
+});

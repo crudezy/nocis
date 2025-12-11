@@ -14,7 +14,7 @@
             <h2 class="text-2xl font-bold text-gray-800">Manage Events</h2>
             <p class="text-gray-600 mt-1">Organize sports events and competitions</p>
         </div>
-        <a href="{{ route('events.create') }}" 
+        <a href="{{ route('admin.events.create') }}"
            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
             <i class="fas fa-plus mr-2"></i> Create Event
         </a>
@@ -23,7 +23,7 @@
     {{-- Search Bar --}}
     <div class="flex items-center justify-between">
         <div class="flex-1 max-w-md">
-            <form method="GET" action="{{ route('events.index') }}" id="search-form">
+            <form method="GET" action="{{ route('admin.events.index') }}" id="search-form">
                 <div class="relative flex items-center border border-gray-300 rounded-lg py-2 px-4 pl-10 bg-white">
                     <i class="fas fa-search absolute left-3 text-gray-400"></i>
                     <input type="text" 
@@ -81,35 +81,35 @@
             <div class="relative">
                 {{-- Desktop tabs (hidden on mobile) --}}
                 <nav class="hidden md:flex space-x-8 px-6" aria-label="Tabs">
-                    <a href="{{ route('events.index', ['status' => 'active']) }}" 
+                    <a href="{{ route('admin.events.index', ['status' => 'active']) }}"
                        class="{{ (!$showCompleted && ($statusFilter ?? 'active') === 'active') ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-play-circle mr-2"></i>Active Events
                         @if($stats['active_events'] > 0)
                             <span class="ml-2 bg-green-100 text-green-600 py-0.5 px-2.5 rounded-full text-xs">{{ $stats['active_events'] }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('events.index', ['status' => 'upcoming']) }}" 
+                    <a href="{{ route('admin.events.index', ['status' => 'upcoming']) }}"
                        class="{{ (!$showCompleted && ($statusFilter ?? '') === 'upcoming') ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-clock mr-2"></i>Upcoming Events
                         @if($stats['upcoming_events'] > 0)
                             <span class="ml-2 bg-blue-100 text-blue-600 py-0.5 px-2.5 rounded-full text-xs">{{ $stats['upcoming_events'] }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('events.index', ['status' => 'planning']) }}" 
+                    <a href="{{ route('admin.events.index', ['status' => 'planning']) }}"
                        class="{{ (!$showCompleted && ($statusFilter ?? '') === 'planning') ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-drafting-compass mr-2"></i>Planning Events
                         @if($stats['planning_events'] > 0)
                             <span class="ml-2 bg-yellow-100 text-yellow-600 py-0.5 px-2.5 rounded-full text-xs">{{ $stats['planning_events'] }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('events.index', ['show_completed' => 'true']) }}" 
+                    <a href="{{ route('admin.events.index', ['show_completed' => 'true']) }}"
                        class="{{ ($showCompleted ?? false) ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-check-circle mr-2"></i>Completed Events
                         @if($stats['completed_events'] > 0)
                             <span class="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2.5 rounded-full text-xs">{{ $stats['completed_events'] }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('events.index', ['status' => 'all']) }}" 
+                    <a href="{{ route('admin.events.index', ['status' => 'all']) }}"
                        class="{{ (!$showCompleted && ($statusFilter ?? 'all') === 'all') ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-list mr-2"></i>All Events
                         <span class="ml-2 bg-red-100 text-red-600 py-0.5 px-2.5 rounded-full text-xs">
@@ -135,7 +135,7 @@
                     <div class="flex overflow-x-auto scrollbar-hide px-8 py-2 space-x-4" 
                          style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;"
                          id="mobile-tabs-container">
-                        <a href="{{ route('events.index', ['status' => 'active']) }}" 
+                        <a href="{{ route('admin.events.index', ['status' => 'active']) }}"
                            class="{{ (!$showCompleted && ($statusFilter ?? 'active') === 'active') ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-500' }} flex-shrink-0 scroll-snap-start flex flex-col items-center justify-center py-3 px-4 rounded-lg border-2 min-w-[120px] transition-all duration-200 hover:shadow-md"
                            style="scroll-snap-align: start;">
                             <i class="fas fa-play-circle text-lg mb-1"></i>
@@ -145,7 +145,7 @@
                             @endif
                         </a>
                         
-                        <a href="{{ route('events.index', ['status' => 'upcoming']) }}" 
+                        <a href="{{ route('admin.events.index', ['status' => 'upcoming']) }}"
                            class="{{ (!$showCompleted && ($statusFilter ?? '') === 'upcoming') ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-500' }} flex-shrink-0 scroll-snap-start flex flex-col items-center justify-center py-3 px-4 rounded-lg border-2 min-w-[120px] transition-all duration-200 hover:shadow-md"
                            style="scroll-snap-align: start;">
                             <i class="fas fa-clock text-lg mb-1"></i>
@@ -155,7 +155,7 @@
                             @endif
                         </a>
                         
-                        <a href="{{ route('events.index', ['status' => 'planning']) }}" 
+                        <a href="{{ route('admin.events.index', ['status' => 'planning']) }}"
                            class="{{ (!$showCompleted && ($statusFilter ?? '') === 'planning') ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-500' }} flex-shrink-0 scroll-snap-start flex flex-col items-center justify-center py-3 px-4 rounded-lg border-2 min-w-[120px] transition-all duration-200 hover:shadow-md"
                            style="scroll-snap-align: start;">
                             <i class="fas fa-drafting-compass text-lg mb-1"></i>
@@ -165,7 +165,7 @@
                             @endif
                         </a>
                         
-                        <a href="{{ route('events.index', ['show_completed' => 'true']) }}" 
+                        <a href="{{ route('admin.events.index', ['show_completed' => 'true']) }}"
                            class="{{ ($showCompleted ?? false) ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-500' }} flex-shrink-0 scroll-snap-start flex flex-col items-center justify-center py-3 px-4 rounded-lg border-2 min-w-[120px] transition-all duration-200 hover:shadow-md"
                            style="scroll-snap-align: start;">
                             <i class="fas fa-check-circle text-lg mb-1"></i>
@@ -175,7 +175,7 @@
                             @endif
                         </a>
                         
-                        <a href="{{ route('events.index', ['status' => 'all']) }}" 
+                        <a href="{{ route('admin.events.index', ['status' => 'all']) }}"
                            class="{{ (!$showCompleted && ($statusFilter ?? 'all') === 'all') ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-200 text-gray-500' }} flex-shrink-0 scroll-snap-start flex flex-col items-center justify-center py-3 px-4 rounded-lg border-2 min-w-[120px] transition-all duration-200 hover:shadow-md"
                            style="scroll-snap-align: start;">
                             <i class="fas fa-list text-lg mb-1"></i>
@@ -295,12 +295,12 @@
                     @endif
 
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ route('events.show', $event) }}"
+                        <a href="{{ route('admin.events.show', $event) }}"
                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                             <i class="fas fa-eye mr-1"></i> View Details
                         </a>
                         @if($event->status !== 'completed')
-                            <a href="{{ route('events.edit', $event) }}"
+                            <a href="{{ route('admin.events.edit', $event) }}"
                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
                                 Edit
                             </a>
@@ -679,7 +679,7 @@
     // Search functionality
     function clearSearch() {
         document.getElementById('search-input').value = '';
-        window.location.href = '{{ route("events.index") }}';
+        window.location.href = '{{ route("admin.events.index") }}';
     }
 
     // Calendar functionality
@@ -839,7 +839,7 @@
         } else if (query.length === 0) {
             // Clear search immediately when input is empty
             searchTimeout = setTimeout(() => {
-                window.location.href = '{{ route("events.index") }}';
+                window.location.href = '{{ route("admin.events.index") }}';
             }, 300);
         }
     });

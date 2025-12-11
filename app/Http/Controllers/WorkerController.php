@@ -10,24 +10,42 @@ use Illuminate\Http\Request;
 
 class WorkerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
-        $openings = WorkerOpening::with(['event', 'jobCategory'])
+        $statusFilter = $request->input('status', 'active');
+
+        // Get ALL openings for statistics calculation (not filtered)
+        $allOpenings = WorkerOpening::with(['event', 'jobCategory'])
             ->withCount('applications')
-            ->orderByDesc('status')
-            ->orderBy('application_deadline')
             ->get();
 
+        // Calculate statistics from ALL openings (consistent across all views)
         $stats = [
-            'total_openings' => $openings->count(),
-            'active_openings' => $openings->where('status', 'open')->count(),
+            'total_openings' => $allOpenings->count(),
+            'active_openings' => $allOpenings->where('status', 'open')->count(),
+            'closed_openings' => $allOpenings->where('status', 'closed')->count(),
             'total_applications' => Application::count(),
-            'positions_filled' => $openings->sum('slots_filled'),
+            'positions_filled' => $allOpenings->sum('slots_filled'),
         ];
+
+        // Apply status filtering for the display list
+        $query = WorkerOpening::with(['event', 'jobCategory'])
+            ->withCount('applications');
+
+        if ($statusFilter === 'active') {
+            $query->where('status', 'open');
+        } elseif ($statusFilter === 'closed') {
+            $query->where('status', 'closed');
+        }
+        // 'all' shows everything, no additional filtering needed
+
+        $openings = $query->orderByDesc('status')
+            ->orderBy('application_deadline')
+            ->get();
 
         $categories = JobCategory::orderBy('name')->get();
         $events = Event::orderBy('start_at')->get(['id', 'title', 'venue']);
@@ -37,13 +55,14 @@ class WorkerController extends Controller
             'stats' => $stats,
             'categories' => $categories,
             'events' => $events,
+            'statusFilter' => $statusFilter,
         ]);
     }
 
     public function create()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $categories = JobCategory::orderBy('name')->get();
@@ -62,8 +81,8 @@ class WorkerController extends Controller
 
     public function store(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -97,13 +116,13 @@ class WorkerController extends Controller
             'benefits' => $validated['benefits'],
         ]);
 
-        return redirect()->route('workers.index', ['flash' => 'created', 'name' => $opening->title]);
+        return redirect()->route('admin.workers.index', ['flash' => 'created', 'name' => $opening->title]);
     }
 
-    public function edit(WorkerOpening $opening)
+    public function edit(WorkerOpening $worker)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $categories = JobCategory::orderBy('name')->get();
@@ -111,16 +130,16 @@ class WorkerController extends Controller
         $events = Event::orderBy('start_at')->get(['id', 'title', 'venue', 'status']);
 
         return view('menu.workers.edit', [
-            'opening' => $opening,
+            'opening' => $worker,
             'categories' => $categories,
             'events' => $events,
         ]);
     }
 
-    public function update(Request $request, WorkerOpening $opening)
+    public function update(Request $request, WorkerOpening $worker)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -141,7 +160,7 @@ class WorkerController extends Controller
             $requirements = array_filter(array_map('trim', explode("\n", $validated['requirements_text'])));
         }
 
-        $opening->update([
+        $worker->update([
             'title' => $validated['title'],
             'job_category_id' => $validated['job_category_id'],
             'event_id' => $validated['event_id'],
@@ -154,6 +173,6 @@ class WorkerController extends Controller
             'benefits' => $validated['benefits'],
         ]);
 
-        return redirect()->route('workers.index', ['flash' => 'updated', 'name' => $opening->title]);
+        return redirect()->route('admin.workers.index', ['flash' => 'updated', 'name' => $worker->title]);
     }
 }

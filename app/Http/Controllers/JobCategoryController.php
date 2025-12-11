@@ -10,8 +10,8 @@ class JobCategoryController extends Controller
 {
     public function index()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $categories = JobCategory::with(['workerOpenings', 'workerType'])
@@ -26,8 +26,8 @@ class JobCategoryController extends Controller
 
     public function create()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $category = new JobCategory();
@@ -39,8 +39,8 @@ class JobCategoryController extends Controller
 
     public function store(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -61,13 +61,13 @@ class JobCategoryController extends Controller
             return response()->json(['success' => true, 'message' => 'Category created successfully']);
         }
 
-        return redirect()->route('categories.index', ['flash' => 'created', 'name' => $category->name]);
+        return redirect()->route('admin.categories.index', ['flash' => 'created', 'name' => $category->name]);
     }
 
     public function edit(JobCategory $category)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         return view('menu.categories.edit', [
@@ -77,8 +77,8 @@ class JobCategoryController extends Controller
 
     public function update(Request $request, JobCategory $category)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $validated = $request->validate([
@@ -99,12 +99,12 @@ class JobCategoryController extends Controller
             return response()->json(['success' => true, 'message' => 'Category updated successfully']);
         }
 
-        return redirect()->route('categories.index', ['flash' => 'updated', 'name' => $category->name]);
+        return redirect()->route('admin.categories.index', ['flash' => 'updated', 'name' => $category->name]);
     }
 
     public function destroy(JobCategory $category)
     {
-        if (!session('authenticated')) {
+        if (!session('admin_authenticated')) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
 

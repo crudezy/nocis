@@ -8,13 +8,13 @@
 @section('content')
 <div class="space-y-6">
     <div class="bg-white p-6 rounded-lg shadow">
-        <form method="POST" action="{{ route('events.update', $event) }}" class="space-y-6">
+        <form method="POST" action="{{ route('admin.events.update', $event) }}" class="space-y-6">
             @csrf
             @method('PUT')
             @include('menu.events.partials.form-fields')
 
             <div class="flex items-center justify-between">
-                <a href="{{ route('events.index') }}"
+                <a href="{{ route('admin.events.index') }}"
                    class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
                     Back to Events
                 </a>

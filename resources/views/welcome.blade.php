@@ -33,7 +33,7 @@
                     @else
                         <a
                             href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                            class="inline-block px-4 py-2 bg-[#F53003] text-white hover:bg-[#d62a02] dark:bg-[#F61500] dark:hover:bg-[#d81300] rounded-md text-sm font-medium leading-normal border border-[#F53003] dark:border-[#F61500]"
                         >
                             Log in
                         </a>
@@ -41,8 +41,9 @@
                         @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
+                                class="inline-block px-4 py-2 bg-white text-[#1b1b18] hover:bg-[#f5f5f4] dark:bg-[#161615] dark:text-[#EDEDEC] dark:hover:bg-[#252524] rounded-md text-sm font-medium leading-normal border border-[#1b1b18] dark:border-[#EDEDEC]"
+                            >
+                                Sign Up
                             </a>
                         @endif
                     @endauth

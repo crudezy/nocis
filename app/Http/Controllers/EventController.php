@@ -20,8 +20,8 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         // Automatically update all event statuses based on current date
@@ -151,8 +151,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $event = new Event([
@@ -173,8 +173,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $data = $this->validatedEventData($request);
@@ -190,7 +190,7 @@ class EventController extends Controller
             $event->sports()->sync($sports);
         }
 
-        return redirect()->route('events.index', ['flash' => 'created', 'name' => $event->title]);
+        return redirect()->route('admin.events.index', ['flash' => 'created', 'name' => $event->title]);
     }
 
     /**
@@ -198,8 +198,8 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         // Load event with all relationships
@@ -224,8 +224,8 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         return view('menu.events.edit', [
@@ -241,8 +241,8 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        if (!session('authenticated')) {
-            return redirect('/login');
+        if (!session('admin_authenticated')) {
+            return redirect('/admin/login');
         }
 
         $data = $this->validatedEventData($request, $event);
@@ -258,7 +258,7 @@ class EventController extends Controller
         // Automatically calculate and update status based on updated dates
         EventStatusService::updateStatus($event);
 
-        return redirect()->route('events.index', ['flash' => 'updated', 'name' => $event->title]);
+        return redirect()->route('admin.events.index', ['flash' => 'updated', 'name' => $event->title]);
     }
 
     /**
@@ -266,7 +266,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        if (!session('authenticated')) {
+        if (!session('admin_authenticated')) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
 
