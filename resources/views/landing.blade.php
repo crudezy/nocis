@@ -453,7 +453,7 @@
                         Sport <span class="text-primary">Event Management</span>
                     </h2>
                     <p class="text-lg text-gray-600 mb-6">
-                        The Worksport is a comprehensive digital platform designed to streamline and enhance the management of Olympic committee operations.
+                        The Worksport is a comprehensive digital platform designed to streamline and enhance the management of Organizing Committee.
                     </p>
                     <p class="text-gray-600 mb-8">
                         Our system integrates event management, worker coordination, job categorization, and advanced analytics to provide a unified solution for national Olympic Academy.
