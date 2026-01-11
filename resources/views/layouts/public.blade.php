@@ -292,7 +292,8 @@
     @include('components.flash')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/jobs.js') }}"></script>
+    <!-- Scripts -->
+    @vite('resources/js/jobs.js')
     <script>
         // Initialize all functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -300,6 +301,10 @@
             const mobileMenuToggle = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
 
+            if (mobileMenuToggle && mobileMenu) {
+                 mobileMenuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                 });
             }
         });
 

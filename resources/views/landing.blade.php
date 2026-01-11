@@ -215,9 +215,9 @@
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/50 filter blur-3xl -z-10"></div>
                     
                     <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight text-gray-900 leading-[1.1] drop-shadow-sm">
-                        National Olympic<br>
+                        Sport Workforce<br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-orange-500">
-                            Academy of Indonesia
+                            Information System 
                         </span>
                     </h1>
                     
@@ -234,7 +234,7 @@
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto pt-8">
+                <div class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto pt-8">
                     <!-- Stat 1 -->
                     <div class="group bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl hover:-translate-y-1 transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.1)]">
                         <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-50 to-white rounded-xl mb-4 mx-auto text-red-600 group-hover:scale-110 transition-transform shadow-sm">
@@ -245,7 +245,7 @@
                     </div>
 
                     <!-- Stat 2 -->
-                    <div class="group bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl hover:-translate-y-1 transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.1)]">
+                    <div class="hidden group bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl hover:-translate-y-1 transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.1)]">
                         <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-50 to-white rounded-xl mb-4 mx-auto text-red-600 group-hover:scale-110 transition-transform shadow-sm">
                             <i class="fas fa-calendar-alt text-xl"></i>
                         </div>
@@ -254,7 +254,7 @@
                     </div>
 
                     <!-- Stat 3 -->
-                    <div class="group bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl hover:-translate-y-1 transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.1)]">
+                    <div class="hidden group bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl hover:-translate-y-1 transition-all duration-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.1)]">
                         <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-50 to-white rounded-xl mb-4 mx-auto text-red-600 group-hover:scale-110 transition-transform shadow-sm">
                             <i class="fas fa-chart-line text-xl"></i>
                         </div>
@@ -262,9 +262,10 @@
                         <div class="text-sm font-medium text-gray-500">Success Rate</div>
                     </div>
                 </div>
+            
 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 pb-12">
+                <div class="hidden flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 pb-12">
                     <a href="{{ session('customer_authenticated') ? route('jobs.index') : route('login') }}" class="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-red-500/20 hover:shadow-red-500/40 transition-all hover:-translate-y-0.5 overflow-hidden">
                         <div class="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -skew-x-12"></div>
                         <span class="relative flex items-center gap-2">
@@ -395,13 +396,49 @@
     </div>
 </section>
 
+
+<!-- Partners and Clients Section -->
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-7xl text-center">
+        <!-- Our Partners -->
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-16 uppercase tracking-wider">
+            Our Partners
+        </h2>
+        
+        <div class="flex justify-center items-center mb-24">
+            <div class="w-full max-w-4xl flex justify-center items-center gap-12 flex-wrap">
+                <!-- NOA Logo -->
+                <div class="group relative p-4 transition-all duration-300 hover:scale-110 grayscale hover:grayscale-0 opacity-70 hover:opacity-100">
+                    <img src="{{ asset('images/Logo NOA Indonesia.png') }}" alt="NOA Indonesia" class="h-24 w-auto object-contain">
+                </div>
+                <!-- Tel-u Logo -->
+                <div class="group relative p-4 transition-all duration-300 hover:scale-110 grayscale hover:grayscale-0 opacity-70 hover:opacity-100">
+                    <img src="{{ asset('images/Logo_Telkom_University.png') }}" alt="NOA Indonesia" class="h-24 w-auto object-contain">
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Clients -->
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-16 uppercase tracking-wider">
+            Our Clients
+        </h2>
+        
+        <div class="flex justify-center items-center min-h-[100px]">
+             <!-- Empty container for future clients -->
+             <div class="w-full max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 opacity-50">
+                <!-- Placeholder structure for future ease of use -->
+             </div>
+        </div>
+    </div>
+</section>
+
 <!-- About Section with Modern Design -->
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4 max-w-7xl">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
             <div class="relative">
                 <div class="bg-primary/5 rounded-3xl p-4 relative overflow-hidden flex items-center justify-center">
-                    <img src="{{ asset('images/logo NOA indonesia.png') }}" alt="Indonesia Olympic Logo" class="w-full h-auto object-contain">
+                    <img src="{{ asset('images/nocis logo.png') }}" alt="NOCIS Logo" class="w-full h-auto object-contain">
                     <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-full"></div>
                 </div>
             </div>
@@ -413,17 +450,16 @@
                         About NOCIS
                     </span>
                     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                        Revolutionizing <span class="text-primary">Olympic Management</span>
+                        Sport <span class="text-primary">Event Management</span>
                     </h2>
                     <p class="text-lg text-gray-600 mb-6">
-                        The National Olympic Academy of Indonesia System (NOCIS) is a comprehensive digital platform designed to streamline and enhance the management of Olympic committee operations.
+                        The Worksport is a comprehensive digital platform designed to streamline and enhance the management of Olympic committee operations.
                     </p>
                     <p class="text-gray-600 mb-8">
                         Our system integrates event management, worker coordination, job categorization, and advanced analytics to provide a unified solution for national Olympic Academy.
                     </p>
                 </div>
 
-                <!-- Stats with Modern Design -->
                 <div class="grid grid-cols-2 gap-6">
                     <div class="bg-primary/5 p-6 rounded-2xl text-center">
                         <div class="text-3xl font-bold text-primary mb-2">10+</div>
@@ -460,7 +496,7 @@
 </section>
 
 <!-- Contact Section with Modern Form -->
-<section class="py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+<section class="hidden py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
     <div class="container mx-auto px-4 max-w-7xl">
         <div class="grid lg:grid-cols-2 gap-12">
             <div class="space-y-6">
