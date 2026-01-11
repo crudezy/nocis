@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'NOCIS - National Olympic Academy of Indonesia')
+@section('title', 'NOCIS - Sport Workforce Information System')
 
 @section('content')
 <style>
